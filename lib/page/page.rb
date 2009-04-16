@@ -80,6 +80,8 @@ class Page
    #ic = Iconv.new('ASCII//TRANSLIT', 'utf-8') 
    coder = HTMLEntities.new
    
+   main = coder.decode(main)
+   
    begin
      main = ic.iconv(main) 
    rescue
