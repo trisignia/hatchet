@@ -2,6 +2,12 @@
 
 require File.join(File.dirname(__FILE__), 'lib', 'hatchet')
 require File.join(File.dirname(__FILE__), 'lib', 'page', 'page')
+require File.join(File.dirname(__FILE__), 'lib', 'rack-openid', 'lib', 'rack', 'openid')
+
+use Rack::OpenID
+
+# Session needs to be after Rack::OpenID
+use Rack::Session::Cookie
 
 set :public, 'public'
 set :views,  'views'
@@ -34,10 +40,23 @@ get '/' do
   haml :index
 end
 
-get '/signup' do
-  @person = Person.new
-  
-  haml :signup
+post '/' do  
+  if resp = request.env["rack.openid.response"]
+    if resp.status == :success
+      "Welcome: #{resp.display_identifier}"
+    else
+      "Error: #{resp.status}"
+    end
+  else
+    # format params to process Gmail addresses as OpenIDs
+    if params["openid_identifier"] =~ /gmail.com$/
+      params["openid_identifier"] = 'https://www.google.com/accounts/o8/id'
+    end
+    header 'WWW-Authenticate' => Rack::OpenID.build_header(
+      :identifier => params["openid_identifier"]
+    )
+    throw :halt, [401, 'got openid?']
+  end
 end
 
 post '/signup' do
