@@ -4,6 +4,7 @@
 require File.join(File.dirname(__FILE__), 'hatchet.rb')
 
 disable :run
+enable :sessions
 set :env, :production
 run Sinatra.application
 
