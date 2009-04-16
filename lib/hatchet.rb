@@ -69,19 +69,20 @@ DataMapper.auto_upgrade!
 
 #
 # Mailers (fold)
-ActionMailer::Base.template_root = File.expand_path(".")
+ActionMailer::Base.template_root  = File.dirname(__FILE__) + "/../views"
 ActionMailer::Base.delivery_method = :sendmail
-ActionMailer::Base.sendmail_settings = {
-  :location => "/usr/sbin/sendmail",
-  :arguments => "-t" 
-}
 
 class Notifier < ActionMailer::Base
-  def hello_world(email, sent_at = Time.now)
-    recipients email
-    from "sinatra-app@do-not-reply.com" 
-    subject "An email from Sinatra @ #{sent_at}" 
-    part :content_type => "text/plain", :body => "Hello, World" 
+
+  def kindle_email(sent_at = Time.now)
+    subject     "An email from Hatchet @ #{sent_at}" 
+    recipients  ['jacob.patton@free,kindle.com', 'jacob.patton@gmail.com']
+    from        "paulbunyan@hatchetapp.com" 
+    sent_on     sent_at
+    attachment  :content_type => "text/html", 
+                :body => File.read(File.dirname(__FILE__) + "/../tmp/pages/test.html"),
+                :filename => "kindling.html"                
   end
+  
 end
 # (end)
