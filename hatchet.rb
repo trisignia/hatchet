@@ -1,6 +1,7 @@
 %w(rubygems sinatra haml dm-core dm-validations dm-timestamps).each{|lib| require lib}
 
 require File.join(File.dirname(__FILE__), 'lib', 'hatchet')
+require File.join(File.dirname(__FILE__), 'lib', 'page', 'page')
 
 set :public, 'public'
 set :views,  'views'
@@ -52,4 +53,15 @@ end
 get '/thanks' do
   
   haml :thanks
+end
+
+get '/chop' do
+
+  @url = params[:url]
+
+  # process page via bj (maybe?)
+  Page.new(@url)
+  
+  # send page via email
+  
 end

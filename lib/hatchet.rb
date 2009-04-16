@@ -66,3 +66,22 @@ end
 
 DataMapper.auto_upgrade!
 # (end)
+
+#
+# Mailers (fold)
+ActionMailer::Base.template_root = File.expand_path(".")
+ActionMailer::Base.delivery_method = :sendmail
+ActionMailer::Base.sendmail_settings = {
+  :location => "/usr/sbin/sendmail",
+  :arguments => "-t" 
+}
+
+class Notifier < ActionMailer::Base
+  def hello_world(email, sent_at = Time.now)
+    recipients email
+    from "sinatra-app@do-not-reply.com" 
+    subject "An email from Sinatra @ #{sent_at}" 
+    part :content_type => "text/plain", :body => "Hello, World" 
+  end
+end
+# (end)

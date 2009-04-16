@@ -105,7 +105,7 @@ class Page
    date = Time.now.strftime('%m-%d-%Y')
    
    # TODO write this file to a temp directory
-   outfile = "#{@title}-#{date}.html"
+   outfile = File.dirname(__FILE__) + "/../../tmp/pages/test.html"
    File.open(outfile, "w") do |f|
      f.write out
    end
