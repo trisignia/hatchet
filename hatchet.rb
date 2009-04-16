@@ -35,12 +35,12 @@ end
 # (end)
 
 
-get '/' do
+get '/login' do
   
   haml :index
 end
 
-post '/' do  
+post '/login' do  
   if resp = request.env["rack.openid.response"]
     if resp.status == :success
       "Welcome: #{resp.display_identifier}"
