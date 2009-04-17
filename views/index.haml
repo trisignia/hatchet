@@ -1,3 +1,8 @@
+:javascript
+  $(document).ready(function() {
+    $('#small_box_link').fancyZoom({width:400, height:300});
+  });
+
 %h1#logo.ir Hatchet
 
 %p#strap.ir chops long webpages down to size and wirelessly delivers them to your Amazon Kindle.
@@ -11,4 +16,7 @@
     %input{:id => 'oid_submit', :name => 'commit', :type => 'image', :src => "/images/arrow.gif", :height => "29px", :width => "28px", :style => "width: 28px; margin-left: 4px;"}
   
   %p.small
-    %a.ir{:href => "/foo"} How does this work?
+    %a.ir{:href => "#small_box", :id => "small_box_link"} How does this work?
+    
+  #small_box
+    %p Foo, foo, foo!
