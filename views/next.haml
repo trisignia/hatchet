@@ -1,0 +1,11 @@
+%p
+  Add pb@hatchetapp.com to your 
+  %a{:href => 'https://www.amazon.com/gp/digital/fiona/manage/ref=ya__14', :target => '_blank'}Kindle approved email addresses.
+
+%form{:action => '/next', :method => 'post'}
+  %h2 Complete setup
+
+  %p
+    %label{:for => 'kindle_email'} Kindle email name:
+    %input{:id => 'kindle_email', :name => 'kindle_email', :type => 'text'}@kindle.com
+    %input{:name => 'commit', :type => 'submit'}

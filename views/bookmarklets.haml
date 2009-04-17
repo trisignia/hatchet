@@ -1,0 +1,9 @@
+%p Drag this bookmarklet to your browser.
+
+%a{:href => "javascript:(function(){f='http://hatchetapp.com/chop?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent(document.title);a=function(){if(!window.open(f,'hatchetapp','location=0,links=0,scrollbars=0,toolbar=0,width=200,height=100'))location.href=f+'close=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()", :title => "Send this page to my Kindle"} chop it!
+
+%p Something not working?
+
+%p 
+  Make sure you've added pb@hatchetapp.com to your
+  %a{:href => 'https://www.amazon.com/gp/digital/fiona/manage/ref=ya__14', :target => '_blank'}Kindle approved email addresses.

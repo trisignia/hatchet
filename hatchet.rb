@@ -83,21 +83,18 @@ end
 post '/login' do
   openid = params[:openid_identifier]
   
-  # create OpenID url
-  openid = "https://www.google.com/accounts/o8/id" if openid =~ /@gmail.com$/
+  # create OpenID url for Google & Yahoo email addresses
+  if openid =~ /@gmail.com$/
+    openid = "https://www.google.com/accounts/o8/id" 
+  elsif openid =~ /@yahoo.com$/
+    openid = "http://yahoo.com/"
+  end
   
   begin
     oidreq = openid_consumer.begin(openid)
   rescue OpenID::DiscoveryFailure => why
     "Sorry, we couldn't find your identifier '#{openid}'"
   else
-    # You could request additional information here - see specs:
-    # http://openid.net/specs/openid-simple-registration-extension-1_0.html
-    # oidreq.add_extension_arg('sreg','required','nickname')
-    # oidreq.add_extension_arg('sreg','optional','fullname, email')
-    
-    # Send request - first parameter: Trusted Site,
-    # second parameter: redirect target
     redirect oidreq.redirect_url(root_url, root_url + "/login/complete")
   end
 end
@@ -122,10 +119,29 @@ get '/login/complete' do
       # redirect to the proper location
       if redirect_path = session[:redirect_path]
         redirect redirect_path
-      else
+      elsif @person.chop_ready?
         redirect '/'
+      else
+        redirect '/next'
       end
   end
+end
+
+get '/next' do
+  login_required
+  
+  redirect '/bookmarklets' if current_person.chop_ready?
+  
+  haml :next
+end
+
+post '/next' do
+  login_required
+  
+  @person = current_person
+  @person.update_attributes(:kindle_email => params[:kindle_email])
+  
+  redirect '/bookmarklets'
 end
 
 get '/logout' do
@@ -134,17 +150,9 @@ get '/logout' do
   redirect '/'
 end
 
-get '/login-required' do
-  login_required
+get '/bookmarklets' do
   
-  session[:redirect_path] = nil
-
-  haml :thanks
-end
-
-get '/thanks' do
-  
-  haml :thanks
+  haml :bookmarklets
 end
 
 get '/chop' do

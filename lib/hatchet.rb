@@ -53,6 +53,10 @@ class Person
   property  :created_at,          DateTime
   property  :updated_at,          DateTime
   
+  def chop_ready?
+    !self.kindle_email.nil?
+  end
+  
 end
 
 require 'digest/md5'
@@ -89,7 +93,7 @@ class Notifier < ActionMailer::Base
 
   def kindle_email(kindle_email, page, sent_at = Time.now)
     subject     "An email from Hatchet @ #{sent_at}" 
-    recipients  ["#{kindle_email}@gmail.com"]
+    recipients  ["#{kindle_email}@kindle.com"]
     from        "pb@hatchetapp.com" 
     sent_on     sent_at
     attachment  :content_type => "text/html", 
