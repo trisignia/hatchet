@@ -1,3 +1,88 @@
+body{
+  background: #ccc url(/images/background.jpg) top center;
+  background-repeat: repeat-y;
+  text-align: center;
+}
+
+#doc{
+  margin: 0 auto;
+  width: 900px;
+  background: #fff;
+  text-align: left;
+  position: relative;
+}
+
+body#home #doc{
+  background: url(/images/hatchet_bg.jpg) top center;
+  height: 767px;
+}
+
+.ir{
+  text-indent: -999em;
+  overflow: hidden;
+}
+
+body#home h1#logo{
+  position: absolute;
+  left: 50px;
+  top: 106px;
+}
+
+body#home #strap{
+  position: absolute;
+  left: 50px;
+  top: 174px;
+}
+
+body#home form#login h2{
+  position: absolute;
+  top: 441px;
+  right: 65px;
+}
+
+body#home form#login p.small{
+  position: absolute;
+  top: 523px;
+  right: 65px;
+  height: 27px;
+  width: 263px;
+}
+
+body#home p#oid{
+  position: absolute;
+  top: 465px;
+  left: 572px;
+}
+
+input#openid_identifier{
+  width: 200px;
+  float: left;
+  font-size: 20px;
+  color: #333;
+  font-family: courier;
+}
+
+input#oid_submit{
+  width: 50px;
+  float: left;
+}
+
+body#home form#login p.small a{
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: transparent url(/images/small_off.jpg) no-repeat;
+  background-position: top left;
+}
+
+body#home form#login p.small a:hover{
+  background: transparent url(/images/small_on.jpg) no-repeat;
+}
+
+#footer{
+  
+}
+
 /* form styles */
 
 form {

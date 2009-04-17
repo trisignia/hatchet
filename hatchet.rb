@@ -57,6 +57,23 @@ set :public, 'public'
 set :views,  'views'
 
 #
+# Stylesheets (fold)
+
+# reset stylesheet
+get '/stylesheets/reset.css' do
+  header 'Content-Type' => 'text/css; charset=utf-8'
+  css :reset
+end
+
+# main stylesheet
+get '/stylesheets/screen.css' do
+  header 'Content-Type' => 'text/css; charset=utf-8'
+  css :screen
+end
+# (end)
+
+
+#
 # Actions
 get '/' do
   haml :index

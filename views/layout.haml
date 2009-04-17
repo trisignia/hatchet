@@ -2,12 +2,12 @@
 %html{:xmlns=> "http://www.w3.org/1999/xhtml", 'xml:lang' => "en", :lang => "en"}
   %head
     %meta{'http-equiv' => "Content-Type", 'content' => "text/html; charset=utf-8"}
-    %title Hatchet
+    %title Hatchet chops long webpages down to size and wirelessly delivers them to your Amazon Kindle.
     
     %link{:rel=>'stylesheet', :href=>'/stylesheets/reset.css',  :type => "text/css"} 
     %link{:rel=>'stylesheet', :href=>'/stylesheets/screen.css', :type => "text/css"} 
     
-  %body
+  %body{:id => @class ||= "home" }
   
     #doc
   
@@ -17,10 +17,10 @@
 
         = yield
         
-      #ft
-        %p
-          Copyright &copy; 2009 
-          %a{:href => "http://trisignia.com/", :title => "Trisignia LLC"} Trisignia LLC
+    #ft{:style => "display: none"}
+      %p
+        Copyright &copy; 2009 
+        %a{:href => "http://trisignia.com/", :title => "Trisignia LLC"} Trisignia LLC
     
     :javascript
-      // Google Analytics code goes here
+      // TODO: Google Analytics code goes here
