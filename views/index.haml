@@ -1,6 +1,6 @@
 :javascript
   $(document).ready(function() {
-    $('#small_box_link').fancyZoom({width:400, height:300});
+    $('#small_box_link').fancyZoom({width:450, height:200});
   });
 
 %h1#logo.ir Hatchet
@@ -19,4 +19,20 @@
     %a.ir{:href => "#small_box", :id => "small_box_link"} How does this work?
     
   #small_box
-    %p Foo, foo, foo!
+    %h2 How does this work?
+    
+    %p
+      Hatchet uses 
+      %a{:href => 'http://openid.net/', :title => 'What is OpenID?'}OpenID
+      to handle setting up your account and logging-in and out.
+    
+    %p Enter an existing OpenID <abbr>URL</abbr>, or enter your <span class="gmail">Gmail</span> or <span class="yahoo">Yahoo</a> email address to get started.
+    
+    %p
+      %small (We have no access to your email passwords by the way &#8212; Google and Yahoo are just helping us log you in.)
+    
+    %p 
+      %strong If you're new to Hatchet,
+      an account will be created automatically for you.
+      And if you're a returning member, 
+      %strong welcome back.

@@ -2,6 +2,38 @@ body{
   background: #ccc url(/images/background.jpg) top center;
   background-repeat: repeat-y;
   text-align: center;
+  font-family: "lucida grande", helvetica, arial, sans-serif;
+  font-size: 86%;
+  color: #222;
+}
+
+h2{
+  margin-bottom: 1em;
+  font-weight: bold;
+}
+
+p{
+  margin-bottom: 1em;
+  line-height: 1.6em;
+}
+
+strong{
+  font-weight: bold;
+}
+
+span.gmail{
+  padding-left: 25px;
+  background: url(/images/gmail.gif) top left no-repeat;
+}
+
+span.yahoo{
+  padding-left: 28px;
+  background: url(/images/yahoo.gif) top left no-repeat;
+}
+
+small{
+  font-size: 0.9em;
+  color: #333;
 }
 
 #doc{
