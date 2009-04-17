@@ -55,25 +55,26 @@ class Person
   
 end
 
+require 'digest/md5'
 class Page
   include DataMapper::Resource
   
   property  :id,                  Integer,  :serial => true    # primary serial key
-  # property  :url,                 String,   :nullable => false, :unique => true
-  # property  :kindle_html,         Text,     :nullable => false
-  property  :uid,                 String,   :nullable => false
+  property  :title,               String,   :length => 255
+  property  :url,                 String,   :length => 255, :nullable => false, :unique => true
+  property  :khtml,               Text
+  property  :uid,                 String,   :unique => true
   property  :created_at,          DateTime
   property  :updated_at,          DateTime
-  
-  def uid
-    self.uid ||= "foobar"
+
+  before :save do
+    self.uid =  Digest::MD5.hexdigest(self.url)
   end
-  
-  # set uid to something unique
-  # before :create do  
-  #   Page.new(self.url, self.uid)
-  # end
-  
+
+  def chipped?
+    self.khtml
+  end
+
 end
 
 DataMapper.auto_upgrade!
@@ -86,14 +87,14 @@ ActionMailer::Base.delivery_method = :sendmail
 
 class Notifier < ActionMailer::Base
 
-  def kindle_email(sent_at = Time.now)
+  def kindle_email(kindle_email, page, sent_at = Time.now)
     subject     "An email from Hatchet @ #{sent_at}" 
-    recipients  ['jacob.patton@gmail.com']
+    recipients  ["#{kindle_email}@gmail.com"]
     from        "pb@hatchetapp.com" 
     sent_on     sent_at
     attachment  :content_type => "text/html", 
-                :body => File.read(File.dirname(__FILE__) + "/../tmp/pages/test.html"),
-                :filename => "kindling.html"                
+                :body => page.khtml,
+                :filename => page.title
   end
   
 end

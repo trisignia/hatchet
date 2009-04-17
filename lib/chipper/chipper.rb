@@ -5,14 +5,15 @@ require 'iconv'
 require 'erb'
 
 
-class Page
+class Chipper
   
-  attr_accessor :url, :doc, :hdoc, :title, :divs, :div_scores
+  attr_accessor :url, :doc, :hdoc, :title, :divs, :div_scores, :khtml
   
   ERB_TEMPLATE = File.dirname(__FILE__) + "/template.erb.html"
   
   def initialize(url, uid)
     @url            = url    
+    @uid            = uid
     @downvote_regex = /(comment|meta|footer|footnote|side)/
     @upvote_regex   = /((^|\\s)(post|hentry|entry[-]?(content|text|body)?|article[-]?(content|text|body)?)(\\s|$))/
 
@@ -102,15 +103,7 @@ class Page
    @title   = self.title
       
    erb = ERB.new(File.read(ERB_TEMPLATE))
-   out = erb.result(binding())
-
-   date = Time.now.strftime('%m-%d-%Y')
-   
-   # TODO write this file to a temp directory
-   outfile = File.dirname(__FILE__) + "/../../tmp/pages/test.html"
-   File.open(outfile, "w") do |f|
-     f.write out
-   end
+   @khtml = erb.result(binding())
   end
 
 end

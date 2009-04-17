@@ -1,7 +1,7 @@
 %w(rubygems sinatra haml dm-core dm-validations dm-timestamps action_mailer andand).each{|lib| require lib}
 
 require File.join(File.dirname(__FILE__), 'lib', 'hatchet')
-require File.join(File.dirname(__FILE__), 'lib', 'page', 'page')
+require File.join(File.dirname(__FILE__), 'lib', 'chipper', 'chipper')
 gem     'ruby-openid', '>=2.1.2'
 require 'openid'
 require 'openid/store/memory'
@@ -99,7 +99,7 @@ get '/login/complete' do
 
     when OpenID::Consumer::SUCCESS
       session[:openid] = oidresp.display_identifier
-      @person = Person.create(:openid => session[:openid])
+      @person = Person.first_or_create(:openid => session[:openid])
       
       # redirect to the proper location
       if redirect_path = session[:redirect_path]
@@ -130,14 +130,21 @@ get '/thanks' do
 end
 
 get '/chop' do
+  login_required
+  
+  # TODO: redirect if user hasn't set their kindle_email
+  
   session[:redirect_path] = nil
 
-  @url = params[:url]
+  @page = Page.first_or_create(:url => params[:url], :title => params[:title])
+
+  # chip page, if necessary
+  unless @page.chipped?
+    @chipper = Chipper.new(@page.url, @page.uid)
+    @page.update_attributes(:khtml => @chipper.khtml)
+  end
+
+  Notifier.deliver_kindle_email(current_person.kindle_email, @page)
   
-  # process page via bj (maybe?)
-  Page.new(@url)
-  
-  # send page via email
-  Notifier.deliver_kindle_email
-  
+  haml :chop
 end
