@@ -15,7 +15,12 @@
     #doc
   
       #hd
-
+        - if logged_in?
+          %ul
+            %li
+              %a{:href => '/logout'} logout
+            %li 
+              %a{:href => '/account'} account
       #bd
 
         = yield
