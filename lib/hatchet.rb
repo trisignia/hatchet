@@ -47,20 +47,33 @@ end
 class Person
   include DataMapper::Resource
   
-  property :id,                   Integer,  :serial => true    # primary serial key
-  property :first_name,           String,   :nullable => false
-  property :last_name,            String,   :nullable => false
-  property :organization,         String  
-  property :email,                String,   :nullable => false, :unique => true, :format => :email_address
-  property :phone,                String
-  property :address_one,          String
-  property :address_two,          String
-  property :city,                 String
-  property :state,                String
-  property :zip,                  String
-  property :created_at,           DateTime
-  property :updated_at,           DateTime
+  property  :id,                  Integer,  :serial => true    # primary serial key
+  property  :openid,              String,   :length => 255, :nullable => false, :unique => true
+  property  :kindle_email,        String
+  property  :created_at,          DateTime
+  property  :updated_at,          DateTime
+  
+end
 
+class Page
+  include DataMapper::Resource
+  
+  property  :id,                  Integer,  :serial => true    # primary serial key
+  # property  :url,                 String,   :nullable => false, :unique => true
+  # property  :kindle_html,         Text,     :nullable => false
+  property  :uid,                 String,   :nullable => false
+  property  :created_at,          DateTime
+  property  :updated_at,          DateTime
+  
+  def uid
+    self.uid ||= "foobar"
+  end
+  
+  # set uid to something unique
+  # before :create do  
+  #   Page.new(self.url, self.uid)
+  # end
+  
 end
 
 DataMapper.auto_upgrade!

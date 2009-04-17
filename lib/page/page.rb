@@ -11,7 +11,7 @@ class Page
   
   ERB_TEMPLATE = File.dirname(__FILE__) + "/template.erb.html"
   
-  def initialize(url)
+  def initialize(url, uid)
     @url            = url    
     @downvote_regex = /(comment|meta|footer|footnote|side)/
     @upvote_regex   = /((^|\\s)(post|hentry|entry[-]?(content|text|body)?|article[-]?(content|text|body)?)(\\s|$))/

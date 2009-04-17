@@ -1,18 +1,14 @@
-%w(rubygems sinatra haml dm-core dm-validations dm-timestamps action_mailer).each{|lib| require lib}
+%w(rubygems sinatra haml dm-core dm-validations dm-timestamps action_mailer andand).each{|lib| require lib}
 
 require File.join(File.dirname(__FILE__), 'lib', 'hatchet')
 require File.join(File.dirname(__FILE__), 'lib', 'page', 'page')
-gem 'ruby-openid', '>=2.1.2'
+gem     'ruby-openid', '>=2.1.2'
 require 'openid'
 require 'openid/store/memory'
 
-# Session needs to be after Rack::OpenID
 use Rack::Session::Cookie, :key => 'rack.session',
                            :expire_after => 60*60*24*365,
                            :secret => 'n0w 1s th3 t1m3 f0r 411 g00d m3n t0 c0m3 t0 th3 a1d 0f th31r c0untry'
-
-set :public, 'public'
-set :views,  'views'
 
 #
 # OpenID (fold)
@@ -37,19 +33,41 @@ not_found do
    @app.call(env)
  end
 end
+
+def logged_in?
+  if session[:openid]    
+    true
+  else
+    false
+  end
+end
+
+def login_required
+  session[:redirect_path] = env['REQUEST_PATH']
+  
+  redirect '/' unless logged_in?
+end
+
+def current_person
+  Person.first(:openid => session[:openid])
+end
 # (end)
 
+set :public, 'public'
+set :views,  'views'
 
 #
 # Actions
-get '/login' do
-  # session["uid"] ||= "jacob.patton@gmail.com"
-  
-  haml :login
+get '/' do
+  haml :index
 end
 
-post '/login/openid' do
+post '/login' do
   openid = params[:openid_identifier]
+  
+  # create OpenID url
+  openid = "https://www.google.com/accounts/o8/id" if openid =~ /@gmail.com$/
+  
   begin
     oidreq = openid_consumer.begin(openid)
   rescue OpenID::DiscoveryFailure => why
@@ -62,11 +80,11 @@ post '/login/openid' do
     
     # Send request - first parameter: Trusted Site,
     # second parameter: redirect target
-    redirect oidreq.redirect_url(root_url, root_url + "/login/openid/complete")
+    redirect oidreq.redirect_url(root_url, root_url + "/login/complete")
   end
 end
 
-get '/login/openid/complete' do
+get '/login/complete' do
   oidresp = openid_consumer.complete(params, request.url)
 
   case oidresp.status
@@ -80,25 +98,30 @@ get '/login/openid/complete' do
       "Login cancelled."
 
     when OpenID::Consumer::SUCCESS
-      # Access additional informations:
-      # puts params['openid.sreg.nickname']
-      # puts params['openid.sreg.fullname']   
+      session[:openid] = oidresp.display_identifier
+      @person = Person.create(:openid => session[:openid])
       
-      # Startup something
-      "Login successfull."  
-      # Maybe something like
-      # session[:user] = User.find_by_openid(oidresp.display_identifier)
+      # redirect to the proper location
+      if redirect_path = session[:redirect_path]
+        redirect redirect_path
+      else
+        redirect '/'
+      end
   end
 end
 
-post '/signup' do
-  @person = Person.new(params[:peep])
+get '/logout' do
+  session[:openid] = nil
+
+  redirect '/'
+end
+
+get '/login-required' do
+  login_required
   
-  if @person.save
-    redirect '/'
-  else
-    haml :signup
-  end  
+  session[:redirect_path] = nil
+
+  haml :thanks
 end
 
 get '/thanks' do
@@ -107,6 +130,7 @@ get '/thanks' do
 end
 
 get '/chop' do
+  session[:redirect_path] = nil
 
   @url = params[:url]
   
