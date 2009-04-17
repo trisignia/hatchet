@@ -43,7 +43,7 @@ def logged_in?
 end
 
 def login_required
-  session[:redirect_path] = env['REQUEST_PATH']
+  session[:redirect_path] = env['REQUEST_URI']
   
   redirect '/' unless logged_in?
 end

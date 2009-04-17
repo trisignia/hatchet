@@ -11,6 +11,10 @@
   = session[:openid]
   
 %p
+  Request
+  = env.to_yaml
+  
+%p
   Redirect path?
   = session[:redirect_path]
   
