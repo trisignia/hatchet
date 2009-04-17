@@ -1,3 +1,9 @@
-%p
-  Url:
-  = @url if @url
+!!! strict
+%html{:xmlns=> "http://www.w3.org/1999/xhtml", 'xml:lang' => "en", :lang => "en"}
+  %head
+    
+    %title Chop'd by Hatchet!
+  
+  %body{:onLoad => "setTimeout('self.close()',500)"}
+
+    %h1 Chopped!

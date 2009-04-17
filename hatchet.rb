@@ -1,7 +1,9 @@
 %w(rubygems sinatra haml dm-core dm-validations dm-timestamps action_mailer andand).each{|lib| require lib}
 
-require File.join(File.dirname(__FILE__), 'lib', 'hatchet')
-require File.join(File.dirname(__FILE__), 'lib', 'chipper', 'chipper')
+# $: << File.dirname(__FILE__) + "/lib"
+require 'lib/hatchet'
+require 'lib/chipper/chipper'
+
 gem     'ruby-openid', '>=2.1.2'
 require 'openid'
 require 'openid/store/memory'
@@ -159,8 +161,8 @@ get '/chop' do
     @chipper = Chipper.new(@page.url, @page.uid)
     @page.update_attributes(:khtml => @chipper.khtml)
   end
-
+  
   Notifier.deliver_kindle_email(current_person.kindle_email, @page)
   
-  haml :chop
+  haml :chop, {:layout => false}
 end

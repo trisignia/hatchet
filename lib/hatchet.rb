@@ -94,7 +94,7 @@ class Notifier < ActionMailer::Base
     sent_on     sent_at
     attachment  :content_type => "text/html", 
                 :body => page.khtml,
-                :filename => page.title
+                :filename => "#{page.title}.html"
   end
   
 end
