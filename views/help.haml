@@ -1,0 +1,28 @@
+%h2 Help
+
+.section
+  %p Drag this bookmarklet to your bookmark toolbar.  When you come across a page you'd like to read on your Kindle, click the bookmarklet, and you're done!
+  
+  %p
+    %a{:href => "javascript:(function(){f='http://hatchetapp.com/chop?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent(document.title);a=function(){if(!window.open(f,'hatchetapp','location=0,links=0,scrollbars=0,toolbar=0,width=200,height=100'))location.href=f+'close=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()", :title => "Send this page to my Kindle"} • chop it!
+    
+
+.section
+
+  %p Need to update your Kindle email name?
+
+  %form{:action => '/next', :method => 'post'}
+    %p
+      %span.clearfix
+        %label{:for => 'kindle_email', :style => "display: none;"} Kindle email name:
+        %input{:id => 'kindle_email', :name => 'kindle_email', :type => 'text'}
+        @kindle.com
+      %input{:id => 'commit', :name => 'commit', :type => 'submit', :style => 'margin-top: 2em;'}
+
+.section
+  %p
+    Want to 
+    / TODO: add JS confirmation to cancellation
+    %a{:href => '/cancel', :title => 'cancel your account', :confirm => 'Are you sure you want to cancel your account?  This cannot be undone.'}cancel your account?
+
+

@@ -58,9 +58,17 @@ small{
   position: relative;
 }
 
+#doc{
+  height: 750px;
+}
+
 body#home #doc{
   background: url(/images/hatchet_bg.jpg) top center;
-  height: 750px;
+  
+}
+
+body #doc{
+  background: url(/images/page.jpg) top center;;
 }
 
 #hd{
@@ -72,6 +80,18 @@ body#home #doc{
     display: inline;
     margin-right: 15px;
   }
+  
+body#page #bd{
+  padding: 150px 60px;
+}
+
+span label, span input{display: inline; float: left;}
+form span{clear: both;}
+
+.section{
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+}
 
 .ir{
   text-indent: -999em;

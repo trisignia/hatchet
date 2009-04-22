@@ -78,6 +78,7 @@ end
 #
 # Actions
 get '/' do
+  @class = "home"
   haml :index
 end
 
@@ -154,6 +155,21 @@ end
 get '/bookmarklets' do
   
   haml :bookmarklets
+end
+
+get '/help' do
+  
+  haml :help
+end
+
+get '/cancel' do
+  login_required
+  
+  # TODO: how to destroy a record with DataMapper?
+  current_person.destroy
+  # TODO: how to set the flash in Sinatra?
+  
+  redirect '/'
 end
 
 get '/chop' do
