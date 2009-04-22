@@ -156,6 +156,7 @@ body#home form#login p.small a:hover{
 }
 
 #ft{
+  color: #333;
   margin: 0 0 50px;
   padding: 0;
 }
