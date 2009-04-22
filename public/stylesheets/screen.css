@@ -7,6 +7,20 @@ body{
   color: #222;
 }
 
+a{
+  color: #1D53AB;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:link, a:visited{
+  text-decoration: none;
+}
+
+a:hover, a:active{
+  text-decoration: underline;
+}
+
 h2{
   margin-bottom: 1em;
   font-weight: bold;
@@ -46,7 +60,7 @@ small{
 
 body#home #doc{
   background: url(/images/hatchet_bg.jpg) top center;
-  height: 767px;
+  height: 750px;
 }
 
 .ir{
@@ -111,8 +125,9 @@ body#home form#login p.small a:hover{
   background: transparent url(/images/small_on.jpg) no-repeat;
 }
 
-#footer{
-  
+#ft{
+  margin: 0 0 50px;
+  padding: 0;
 }
 
 /* form styles */

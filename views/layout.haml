@@ -6,29 +6,35 @@
     
     %link{:rel=>'stylesheet', :href=>'/stylesheets/reset.css',  :type => "text/css"} 
     %link{:rel=>'stylesheet', :href=>'/stylesheets/screen.css', :type => "text/css"} 
-    
-    %script{:type =>"text/javascript", :src => "http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"}
+
+    %script{:type =>"text/javascript", :src => "/javascripts/jquery.js"}    
     %script{:type =>"text/javascript", :src => "/javascripts/fancyzoom.min.js"}
 
   %body{:id => @class ||= "home" }
   
     #doc
-  
+    
       #hd
         - if logged_in?
           %ul
             %li
               %a{:href => '/logout'} logout
             %li 
-              %a{:href => '/account'} account
+              %a{:href => '/help'} help
       #bd
 
         = yield
         
-    #ft{:style => "display: none"}
-      %p
-        Copyright &copy; 2009 
-        %a{:href => "http://trisignia.com/", :title => "Trisignia LLC"} Trisignia LLC
+    #ft
+      %p                                                                
+        Created by hand by 
+        / TODO: enkode email address
+        %a{:href => "mailto:", :title => "get in touch"} Jacob
+        at 
+        %a{:href => "http://trisignia.com", :title => "Trisignia LLC"} Trisignia
+        | 
+        Follow me on 
+        %a{:href => "http://twitter.com/trisignia", :title => "follow me on Twitter"} Twitter
     
     :javascript
       var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
