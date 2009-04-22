@@ -42,6 +42,7 @@ def logged_in?
   else
     false
   end
+  true # TODO: remove this line -- it's just for testing!
 end
 
 def login_required

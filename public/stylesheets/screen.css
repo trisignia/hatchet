@@ -63,6 +63,16 @@ body#home #doc{
   height: 750px;
 }
 
+#hd{
+  position: absolute;
+  top: 20px; right: 0;
+}
+
+  #hd ul li{
+    display: inline;
+    margin-right: 15px;
+  }
+
 .ir{
   text-indent: -999em;
   overflow: hidden;
