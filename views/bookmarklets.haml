@@ -1,8 +1,9 @@
-%p Drag this bookmarklet to your browser.
+%h2 Almost done...
 
-%a{:href => "javascript:(function(){f='http://hatchetapp.com/chop?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent(document.title);a=function(){if(!window.open(f,'hatchetapp','location=0,links=0,scrollbars=0,toolbar=0,width=200,height=100'))location.href=f+'close=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()", :title => "Send this page to my Kindle"} chop it!
+%p Drag this bookmarklet to your bookmark toolbar.  When you come across a page you'd like to read on your Kindle, click the bookmarklet, and you're done!
 
-%p Something not working?
+%p
+  %a{:href => "javascript:(function(){f='http://hatchetapp.com/chop?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent(document.title);a=function(){if(!window.open(f,'hatchetapp','location=0,links=0,scrollbars=0,toolbar=0,width=200,height=100'))location.href=f+'close=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()", :title => "Send this page to my Kindle"} • chop it!
 
 %p 
   Make sure you've added pb@hatchetapp.com to your

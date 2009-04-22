@@ -132,7 +132,7 @@ end
 get '/next' do
   login_required
   
-  redirect '/bookmarklets' if current_person.chop_ready?
+  # redirect '/bookmarklets' if current_person.chop_ready?
   
   haml :next
 end
