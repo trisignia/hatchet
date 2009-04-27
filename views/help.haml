@@ -28,7 +28,6 @@
 .section
   %p
     Want to 
-    / TODO: add JS confirmation to cancellation
-    %a{:href => '/cancel', :title => 'cancel your account', :confirm => 'Are you sure you want to cancel your account?  This cannot be undone.'}cancel your account?
+    %a{:href => '/cancel', :title => 'cancel your account', :onclick => 'return confirm("Are you sure you want to cancel your account?  This cannot be undone.")'}cancel your account?
 
 

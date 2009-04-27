@@ -52,14 +52,15 @@ class Person
   property  :kindle_email,        String
   property  :created_at,          DateTime
   property  :updated_at,          DateTime
-  
+    
   def chop_ready?
     !self.kindle_email.nil?
   end
   
+  has n, :chips
+  
 end
 
-require 'digest/md5'
 class Page
   include DataMapper::Resource
   
@@ -67,18 +68,31 @@ class Page
   property  :title,               String,   :length => 255
   property  :url,                 String,   :length => 255, :nullable => false, :unique => true
   property  :khtml,               Text
-  property  :uid,                 String,   :unique => true
   property  :created_at,          DateTime
   property  :updated_at,          DateTime
-
-  before :save do
-    self.uid =  Digest::MD5.hexdigest(self.url)
-  end
 
   def chipped?
     self.khtml
   end
+  
+  has n, :chips
 
+end
+
+class Chip  
+  include DataMapper::Resource
+  
+  property  :id,                  Integer,  :serial => true    # primary serial key
+  property  :person_id,           Integer,  :nullable => false
+  property  :page_id,             Integer,  :nullable => false  
+  property  :attempted_sent_at,   DateTime
+  property  :sent_at,             DateTime
+  property  :created_at,          DateTime
+  
+  
+  belongs_to :person
+  belongs_to :page
+  
 end
 
 DataMapper.auto_upgrade!
@@ -93,7 +107,7 @@ class Notifier < ActionMailer::Base
 
   def kindle_email(kindle_email, page, sent_at = Time.now)
     subject     "An email from Hatchet @ #{sent_at}" 
-    recipients  ["#{kindle_email}@kindle.com"]
+    recipients  ["#{kindle_email}@gmail.com"]
     from        "pb@hatchetapp.com" 
     sent_on     sent_at
     attachment  :content_type => "text/html", 

@@ -11,9 +11,8 @@ class Chipper
   
   ERB_TEMPLATE = File.dirname(__FILE__) + "/template.erb.html"
   
-  def initialize(url, uid)
+  def initialize(url)
     @url            = url    
-    @uid            = uid
     @downvote_regex = /(comment|meta|footer|footnote|side)/
     @upvote_regex   = /((^|\\s)(post|hentry|entry[-]?(content|text|body)?|article[-]?(content|text|body)?)(\\s|$))/
 

@@ -48,7 +48,10 @@ end
 def login_required
   session[:redirect_path] = env['REQUEST_URI']
   
-  redirect '/' unless logged_in?
+  unless logged_in?
+    flash[:error] = "You must be logged-in to view the page you requested."
+    redirect '/' 
+  end
 end
 
 def current_person
@@ -136,7 +139,7 @@ get '/login/complete' do
 
       redirect '/'
     when OpenID::Consumer::SUCCESS
-      session[:openid] = oidresp.display_identifier
+      session[:openid] = @oidresp.display_identifier
       @person = Person.first_or_create(:openid => session[:openid])
       
       # redirect to the proper location
@@ -193,12 +196,13 @@ end
 # destroy a user's account
 get '/cancel' do
   login_required
-  
-  current_person.destroy
-  
-  flash[:notice] = "Your account has been deleted."
-  
-  redirect '/'
+    
+  if current_person.destroy  
+    session[:redirect_path] = nil
+    flash[:notice]          = "Your account has been deleted."
+    session[:openid]        = nil    
+    redirect '/'
+  end
 end
 
 # bookmarklet page -- TODO: style this page a bit, create rake test for chopping
@@ -209,17 +213,8 @@ get '/chop' do
   
   session[:redirect_path] = nil
 
-  # add page, chip
   @page = Page.first_or_create(:url => params[:url], :title => params[:title])
-
-  # chip page, if necessary
-  unless @page.chipped?
-    @chipper = Chipper.new(@page.url, @page.uid)
-    @page.update_attributes(:khtml => @chipper.khtml)
-  end
-  
-  Notifier.deliver_kindle_email(current_person.kindle_email, @page)
-  # end add page, chip --> chip page via rake task (run via cron)
+  @chip = Chip.create(:person => current_person, :page => @page)
   
   haml :chop, {:layout => false}
 end
