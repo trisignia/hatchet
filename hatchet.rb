@@ -196,6 +196,8 @@ get '/cancel' do
   
   current_person.destroy
   
+  flash[:notice] = "Your account has been deleted."
+  
   redirect '/'
 end
 
