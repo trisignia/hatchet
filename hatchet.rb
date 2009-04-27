@@ -205,7 +205,7 @@ get '/cancel' do
   end
 end
 
-# bookmarklet page -- TODO: style this page a bit, create rake test for chopping
+# bookmarklet page -- TODO: style this page a bit
 get '/chop' do
   login_required
   
