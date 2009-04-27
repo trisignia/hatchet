@@ -1,13 +1,14 @@
 %w(rubygems sinatra haml dm-core dm-validations dm-timestamps action_mailer andand).each{|lib| require lib}
 
-# $: << File.dirname(__FILE__) + "/lib"
-require 'lib/hatchet'
-require 'lib/chipper/chipper'
+$: << File.dirname(__FILE__) + "/lib"
+require 'hatchet'
+require 'chipper/chipper'
 
 gem     'ruby-openid', '>=2.1.2'
 require 'openid'
 require 'openid/store/memory'
 
+# expire session cookies in one year
 use Rack::Session::Cookie, :key => 'rack.session',
                            :expire_after => 60*60*24*365,
                            :secret => 'n0w 1s th3 t1m3 f0r 411 g00d m3n t0 c0m3 t0 th3 a1d 0f th31r c0untry'
@@ -42,7 +43,6 @@ def logged_in?
   else
     false
   end
-  true # TODO: remove this line -- it's just for testing!
 end
 
 def login_required
@@ -77,11 +77,14 @@ end
 
 #
 # Actions
+
+# homepage
 get '/' do
   @class = "home"
   haml :index
 end
 
+# process OpenID login
 post '/login' do
   openid = params[:openid_identifier]
   
@@ -101,6 +104,7 @@ post '/login' do
   end
 end
 
+# login completed, redirect appropriately
 get '/login/complete' do
   oidresp = openid_consumer.complete(params, request.url)
 
@@ -129,6 +133,7 @@ get '/login/complete' do
   end
 end
 
+# complete signup (form to add kindle email)
 get '/next' do
   login_required
   
@@ -137,6 +142,7 @@ get '/next' do
   haml :next
 end
 
+# add kindle email to user record & redirect to bookmarklets page
 post '/next' do
   login_required
   
@@ -146,22 +152,26 @@ post '/next' do
   redirect '/bookmarklets'
 end
 
+# logout (destroy session)
 get '/logout' do
   session[:openid] = nil
 
   redirect '/'
 end
 
+# display bookmarklet link
 get '/bookmarklets' do
   
   haml :bookmarklets
 end
 
+# need some help?  howto & update your kindle email
 get '/help' do
   
   haml :help
 end
 
+# destroy a user's account
 get '/cancel' do
   login_required
   
@@ -172,6 +182,7 @@ get '/cancel' do
   redirect '/'
 end
 
+# bookmarklet page -- TODO: style this page a bit, create rake test for chopping
 get '/chop' do
   login_required
   
