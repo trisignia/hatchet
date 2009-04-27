@@ -23,6 +23,8 @@ class Chipper
   
   def parse_doc
     @doc = Hpricot(open(@url))
+    # add a wrapper div in case the main content isn't wrapped in a div
+    (@doc/:body).inner_html = "<div>" + (@doc/:body).inner_html + "</div>"    
     fetch_divs
   end
   
@@ -83,6 +85,7 @@ class Chipper
    
    # replace troublesome nbsps
    main.gsub!("\xa0", ' ')
+   main.gsub!("\xA9", ' ')
    
    begin
      main = ic.iconv(main) 
