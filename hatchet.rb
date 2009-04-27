@@ -1,8 +1,8 @@
 %w(rubygems sinatra haml dm-core dm-validations dm-timestamps action_mailer andand).each{|lib| require lib}
 
-$: << File.dirname(__FILE__) + "/lib"
-require 'hatchet'
-require 'chipper/chipper'
+# $: << File.dirname(__FILE__) + "/lib"
+require 'lib/hatchet'
+require 'lib/chipper/chipper'
 
 gem     'ruby-openid', '>=2.1.2'
 require 'openid'
@@ -54,6 +54,17 @@ end
 def current_person
   Person.first(:openid => session[:openid])
 end
+
+def flash
+  session[:flash] = {} if session[:flash] && session[:flash].class != Hash
+  session[:flash] ||= {}
+end
+
+def clear_flash_and_render_haml(*args)
+  myhaml = haml(*args)
+  flash.clear
+  myhaml
+end
 # (end)
 
 set :public, 'public'
@@ -80,8 +91,9 @@ end
 
 # homepage
 get '/' do
-  @class = "home"
-  haml :index
+  @id = "home"
+  
+  clear_flash_and_render_haml :index
 end
 
 # process OpenID login
@@ -98,7 +110,9 @@ post '/login' do
   begin
     oidreq = openid_consumer.begin(openid)
   rescue OpenID::DiscoveryFailure => why
-    "Sorry, we couldn't find your identifier '#{openid}'"
+    flash[:error] = "Sorry, we couldn't find your identifier '#{openid}'"
+
+    redirect '/'
   else
     redirect oidreq.redirect_url(root_url, root_url + "/login/complete")
   end
@@ -106,18 +120,21 @@ end
 
 # login completed, redirect appropriately
 get '/login/complete' do
-  oidresp = openid_consumer.complete(params, request.url)
+  @oidresp = openid_consumer.complete(params, request.url)
 
-  case oidresp.status
+  case @oidresp.status
     when OpenID::Consumer::FAILURE
-      "Sorry, we could not authenticate you with the identifier '{openid}'."
-
+      flash[:error] = "Sorry, we could not authenticate you with the identifier '{openid}'."
+      
+      redirect '/'
     when OpenID::Consumer::SETUP_NEEDED
-      "Immediate request failed - Setup Needed"
+      flash[:error] = "Immediate request failed - Setup Needed"
 
+      redirect '/'
     when OpenID::Consumer::CANCEL
-      "Login cancelled."
+      flash[:error] = "Login cancelled."
 
+      redirect '/'
     when OpenID::Consumer::SUCCESS
       session[:openid] = oidresp.display_identifier
       @person = Person.first_or_create(:openid => session[:openid])
@@ -137,7 +154,7 @@ end
 get '/next' do
   login_required
   
-  # redirect '/bookmarklets' if current_person.chop_ready?
+  redirect '/bookmarklets' if current_person.chop_ready?
   
   haml :next
 end
@@ -156,6 +173,7 @@ end
 get '/logout' do
   session[:openid] = nil
 
+  flash[:notice] = "You have been logged out."
   redirect '/'
 end
 
@@ -167,6 +185,7 @@ end
 
 # need some help?  howto & update your kindle email
 get '/help' do
+  login_required
   
   haml :help
 end
@@ -175,9 +194,7 @@ end
 get '/cancel' do
   login_required
   
-  # TODO: how to destroy a record with DataMapper?
   current_person.destroy
-  # TODO: how to set the flash in Sinatra?
   
   redirect '/'
 end
@@ -186,10 +203,11 @@ end
 get '/chop' do
   login_required
   
-  # TODO: redirect if user hasn't set their kindle_email
+  redirect '/next' unless current_person.chop_ready?
   
   session[:redirect_path] = nil
 
+  # add page, chip
   @page = Page.first_or_create(:url => params[:url], :title => params[:title])
 
   # chip page, if necessary
@@ -199,6 +217,7 @@ get '/chop' do
   end
   
   Notifier.deliver_kindle_email(current_person.kindle_email, @page)
+  # end add page, chip --> chip page via rake task (run via cron)
   
   haml :chop, {:layout => false}
 end

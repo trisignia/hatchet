@@ -10,10 +10,17 @@
     %script{:type =>"text/javascript", :src => "/javascripts/jquery.js"}    
     %script{:type =>"text/javascript", :src => "/javascripts/fancyzoom.min.js"}
 
-  %body{:id => @class ||= "page" }
+  %body{:id => @id ||= "page" }
   
     #doc
     
+      - if flash[:error]
+        .error
+          = flash[:error]
+      - elsif flash[:notice]
+        .notice
+          = flash[:notice]
+
       #hd
         - if logged_in?
           %ul
