@@ -77,10 +77,12 @@ class Chipper
    ic = Iconv.new('ISO-8859-1//TRANSLIT', 'utf-8') 
    ic2 = Iconv.new('ISO-8859-1//IGNORE', 'utf-8') 
    
-   #ic = Iconv.new('ASCII//TRANSLIT', 'utf-8') 
    coder = HTMLEntities.new
    
    main = coder.decode(main)
+   
+   # replace troublesome nbsps
+   main.gsub!("\xa0", ' ')
    
    begin
      main = ic.iconv(main) 
