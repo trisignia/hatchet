@@ -107,7 +107,7 @@ class Notifier < ActionMailer::Base
 
   def kindle_email(kindle_email, page, sent_at = Time.now)
     subject     "An email from Hatchet @ #{sent_at}" 
-    recipients  ["#{kindle_email}@gmail.com"]
+    recipients  ["#{kindle_email}@kindle.com"]
     from        "pb@hatchetapp.com" 
     sent_on     sent_at
     attachment  :content_type => "text/html", 
