@@ -73,41 +73,61 @@ class Chipper
   end
   
   def kindlize_main_div
-   main = self.main_div.inner_html 
-   
-   # clean up entries:
-   ic = Iconv.new('ISO-8859-1//TRANSLIT', 'utf-8') 
-   ic2 = Iconv.new('ISO-8859-1//IGNORE', 'utf-8') 
-   
-   coder = HTMLEntities.new
-   
-   main = coder.decode(main)
-   
-   # replace troublesome nbsps
-   main.gsub!("\xa0", ' ')
-   main.gsub!("\xA9", ' ')
-   
-   begin
-     main = ic.iconv(main) 
-   rescue
-     main = ic2.iconv(main) 
-   end
-   
-   doc = Hpricot(main)
-   doc.search('h1, h2, h3') do |h|
+    main = self.main_div.inner_html 
+
+    # clean up entries:
+    ic = Iconv.new('ISO-8859-1//TRANSLIT', 'utf-8') 
+    ic2 = Iconv.new('ISO-8859-1//IGNORE', 'utf-8') 
+
+    coder = HTMLEntities.new
+
+    main = coder.decode(main)
+
+    # replace troublesome nbsps
+    main.gsub!("\xa0", ' ')
+    main.gsub!("\xA9", ' ')
+
+    # this bastard's not working for some reason
+    # begin
+    #  main = ic.iconv(main) 
+    # rescue
+    #  main = ic2.iconv(main) 
+    # end
+    
+    begin
+      # convert main to native charset (note: in this case we're
+      # converting from utf-8 to the native charset, but the only thing
+      # about the code that's utf-8 specific is the assumption about
+      # character width and the unicode lookup table below)
+      main = ic.iconv(main) << ic.iconv(nil)
+    rescue Iconv::IllegalSequence => e
+      # save the portion of the string that was successful, the
+      # invalid character, and the remaining (pending) string
+      success_str = e.success
+      ch, pending_str = e.failed.split(//, 2)
+      ch_int = ch.to_i
+
+      main = success_str + pending_str
+      retry
+    end
+
+    ret = main
+
+    doc = Hpricot(main)
+    doc.search('h1, h2, h3') do |h|
      h.swap("<h4>#{h.inner_text}</h4>")
-   end
-   doc.search('//font') do |font|
+    end
+    doc.search('//font') do |font|
      font.swap(font.inner_text)
-   end
-   doc.search('//img').remove
-   doc.search('svg, object, embed').remove
-   doc.search('script').remove
-   @content =  doc.to_s
-   @title   = self.title
-      
-   erb = ERB.new(File.read(ERB_TEMPLATE))
-   @khtml = erb.result(binding())
+    end
+    doc.search('//img').remove
+    doc.search('svg, object, embed').remove
+    doc.search('script').remove
+    @content =  doc.to_s
+    @title   = self.title
+  
+    erb = ERB.new(File.read(ERB_TEMPLATE))
+    @khtml = erb.result(binding())
   end
 
 end
